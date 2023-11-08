@@ -17,6 +17,10 @@ app.get("/api/lists/:userId/:listId", async (request, response) => {
   const listId = request.params.listId;
 
   try {
+    console.log(
+      `Received GET request for list by user ${userId} and list ${listId}`
+    );
+
     const { rows } = await client.query(
       `
       SELECT Lists.id AS list_id, Lists.name AS list_name, Tasks.id AS task_id, Tasks.name AS task_name
@@ -35,6 +39,10 @@ app.get("/api/lists/:userId/:listId", async (request, response) => {
 
     response.json(listData);
   } catch (error) {
+    console.error(
+      `Error processing GET request for user ${userId} and list ${listId}:`,
+      error
+    );
     response.status(500).json({ error: "Internal server error" });
   }
 });
@@ -47,6 +55,12 @@ app.post(
     const listId = request.params.listId;
     const { task } = request.body;
 
+    console.log(
+      `Received POST request to create a new task for user ${userId} and list ${listId}: ${JSON.stringify(
+        task
+      )}`
+    );
+
     try {
       const result = await client.query(
         "INSERT INTO Tasks (list_id, name) VALUES ($1, $2) RETURNING id, name",
@@ -55,6 +69,11 @@ app.post(
 
       response.status(201).json(result.rows[0]);
     } catch (error) {
+      console.error(
+        `Error processing POST request for user ${userId} and list ${listId}:`,
+        error
+      );
+
       response.status(500).json({ error: "Internal server error" });
     }
   }
@@ -68,6 +87,10 @@ app.put(
     const listId = request.params.listId;
     const taskId = request.params.taskId;
     const { taskName } = request.body;
+
+    console.log(
+      `Received PUT request to update task ${taskId} for user ${userId} in list ${listId}: ${taskName}`
+    );
 
     try {
       const result = await client.query(
@@ -83,6 +106,10 @@ app.put(
         response.status(200).json({ message: "Task updated successfully" });
       }
     } catch (error) {
+      console.error(
+        `Error processing PUT request for user ${userId}, list ${listId}, and task ${taskId}:`,
+        error
+      );
       response.status(500).json({ error: "Internal server error" });
     }
   }
@@ -94,6 +121,10 @@ app.delete(
     const userId = request.params.userId;
     const listId = request.params.listId;
     const taskId = request.params.taskId;
+
+    console.log(
+      `Received DELETE request to delete task ${taskId} for user ${userId} in list ${listId}`
+    );
 
     try {
       const result = await client.query(
@@ -109,6 +140,11 @@ app.delete(
         response.status(204).end();
       }
     } catch (error) {
+      console.error(
+        `Error processing DELETE request for user ${userId}, list ${listId}, and task ${taskId}:`,
+        error
+      );
+
       response.status(500).json({ error: "Internal server error" });
     }
   }
