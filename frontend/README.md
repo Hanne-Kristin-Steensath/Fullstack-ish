@@ -25,6 +25,8 @@ You can copy the "init.sql" file into the database container using the following
 ```bash
 docker-compose cp init.sql database:/docker-entrypoint-initdb.d/init.sql
 
-To load the SQL file into the database, you can use the following docker-compose exec command:
-docker-compose exec database psql -U postgres -d Docker -f /docker-entrypoint-initdb.d/init.sql
+To load the SQL file into the database, you can use the following
+
+docker-compose exec command:
+docker-compose exec database psql -U postgres -f /docker-entrypoint-initdb.d/init.sql
 ```
